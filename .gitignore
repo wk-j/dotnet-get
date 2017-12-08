@@ -3,3 +3,4 @@ obj
 .paket/*.exe
 paket-files
 packages
+temp

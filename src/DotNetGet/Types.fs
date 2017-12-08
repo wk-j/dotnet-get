@@ -1,4 +1,4 @@
-namespace DotNetGet.Models
+namespace DotNetGet.Types
 
 open FSharp.Data
 
