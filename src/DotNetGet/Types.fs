@@ -1,3 +1,5 @@
-namespace DotNetGet.Types
+namespace DotNetGet.Models
 
-//type Release = JsonProvider<"../../template/release.json">
+open FSharp.Data
+
+type Release = JsonProvider<"../../template/release.json">
