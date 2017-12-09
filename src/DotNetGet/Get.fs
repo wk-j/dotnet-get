@@ -15,18 +15,23 @@ let getLatestRelease repo =
     |> run
     |> Release.Parse
 
-let downloadAssets (assets: Release.Asset list) = 
-    let download url = 
-        job { 
-            use! res = 
-                createUrl Get url 
-                |> setHeader (RequestHeader.UserAgent "Chrome or summat")
-                |> getResponse
-            use fileStream = new FileStream("/Users/wk/Source/DotNetGet/temp/xyz.zip", FileMode.Create)
-            do! res.body.CopyToAsync fileStream |> Job.awaitUnitTask
-        }
-        |> run
+let private extractName url = 
+    let uri = System.Uri url
+    Path.GetFileName (uri.LocalPath)
 
-    assets 
-    |> List.map (fun x -> x.BrowserDownloadUrl) 
-    |> List.map download
+
+let downloadAsset savePath (asset: Release.Asset) = 
+    job { 
+        use! res = 
+            createUrl Get (asset.BrowserDownloadUrl)
+            |> setHeader (RequestHeader.UserAgent "Chrome or summat")
+            |> getResponse
+        use fileStream = new FileStream(savePath, FileMode.Create)
+        do! res.body.CopyToAsync fileStream |> Job.awaitUnitTask
+        return savePath
+    }
+    |> run
+
+let downloadAssets dir (assets: Release.Asset list) = 
+    assets
+    |> List.map (fun x -> downloadAsset (Path.Combine(dir, extractName x.BrowserDownloadUrl) ) x)

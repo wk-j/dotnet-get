@@ -4,3 +4,5 @@ obj
 paket-files
 packages
 temp
+.DS_Store
+publish
